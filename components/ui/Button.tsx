@@ -1,18 +1,27 @@
-import { ReactNode } from "react";
+import { MouseEventHandler, ReactNode } from "react";
 import Link from "next/link";
 
 import styles from "./Button.module.css";
 
 export interface ButtonProps {
   children: ReactNode;
-  link: string;
+  link?: string;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-function Button({ link, children }: ButtonProps) {
+function Button({ link, children, onClick }: ButtonProps) {
+  if (link) {
+    return (
+      <Link href={link}>
+        <a className={styles.btn}>{children}</a>
+      </Link>
+    );
+  }
+
   return (
-    <Link href={link}>
-      <a className={styles.btn}>{children}</a>
-    </Link>
+    <button className={styles.btn} onClick={onClick}>
+      {children}
+    </button>
   );
 }
 
