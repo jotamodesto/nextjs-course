@@ -1,5 +1,6 @@
 import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 import { getAllEvents } from "../../helper/api-util";
 import { Event } from "../../models/event";
@@ -22,6 +23,10 @@ function AllEventsPage({ events }: AllEventsProps) {
 
   return (
     <>
+      <Head>
+        <title>All Events</title>
+        <meta name="description" content="Find a lot of great events" />
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList items={events} />
     </>

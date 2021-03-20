@@ -1,4 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from "next";
+import Head from "next/head";
 
 import { getEventById, getFeaturedEvents } from "../../helper/api-util";
 import { Event } from "../../models/event";
@@ -25,6 +26,10 @@ function EventDetailPage({ event }: EventDetailProps) {
 
   return (
     <>
+      <Head>
+        <title>{event.title}</title>
+        <meta name="description" content={event.description} />
+      </Head>
       <EventSummary title={event.title} />
       <EventLogistics
         date={event.date}

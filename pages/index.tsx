@@ -1,4 +1,5 @@
 import { GetStaticProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 import { Event } from "../models/event";
@@ -22,6 +23,10 @@ function HomePage({ featuredEvents }: HomePageProps) {
 
   return (
     <>
+      <Head>
+        <title>NextJS Events</title>
+        <meta name="description" content="Find a lot of great events" />
+      </Head>
       <EventsSearch onSearch={findEventsHandler} />
       <EventList items={featuredEvents} />
     </>
