@@ -1,14 +1,18 @@
+import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
+
+import { Event } from "../models/event";
+import { getFeaturedEvents } from "../helper/api-util";
 
 import EventList from "../components/events/EventList";
 import EventsSearch from "../components/events/EventsSearch";
 
-import { getFeaturedEvents } from "../dummy-data";
+export interface HomePageProps {
+  featuredEvents: Event[];
+}
 
-function HomePage() {
+function HomePage({ featuredEvents }: HomePageProps) {
   const router = useRouter();
-
-  const featuredEvents = getFeaturedEvents();
 
   function findEventsHandler(year: string, month: string) {
     const fullPath = `/events/${year}/${month}`;
@@ -25,3 +29,9 @@ function HomePage() {
 }
 
 export default HomePage;
+
+export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
+  const featuredEvents = await getFeaturedEvents();
+
+  return { props: { featuredEvents }, revalidate: 1800 };
+};

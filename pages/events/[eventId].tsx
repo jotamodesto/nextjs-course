@@ -1,17 +1,18 @@
-import { useRouter } from "next/router";
+import { GetStaticPaths, GetStaticProps } from "next";
 
-import { getEventById } from "../../dummy-data";
+import { getEventById, getFeaturedEvents } from "../../helper/api-util";
+import { Event } from "../../models/event";
+
 import EventSummary from "../../components/event-detail/EventSummary";
 import EventLogistics from "../../components/event-detail/EventLogistics";
 import EventContent from "../../components/event-detail/EventContent";
 import ErrorAlert from "../../components/ui/ErrorAlert";
 
-function EventDetailPage() {
-  const { query } = useRouter();
-  const { eventId } = query;
+export interface EventDetailProps {
+  event: Event;
+}
 
-  const event = getEventById(eventId);
-
+function EventDetailPage({ event }: EventDetailProps) {
   if (!event) {
     return (
       <>
@@ -39,3 +40,23 @@ function EventDetailPage() {
 }
 
 export default EventDetailPage;
+
+export const getStaticProps: GetStaticProps = async context => {
+  const { eventId } = context.params;
+
+  const event = await getEventById(eventId as string);
+
+  return { props: { event }, revalidate: 60 };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const events = await getFeaturedEvents();
+  const paths = events.map(event => ({
+    params: { eventId: event.id.toString() },
+  }));
+
+  return {
+    paths,
+    fallback: "blocking",
+  };
+};
