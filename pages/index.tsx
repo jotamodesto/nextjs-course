@@ -7,6 +7,7 @@ import { getFeaturedEvents } from "../helper/api-util";
 
 import EventList from "../components/events/EventList";
 import EventsSearch from "../components/events/EventsSearch";
+import NewsletterRegistration from "../components/input/NewsletterRegistration";
 
 export interface HomePageProps {
   featuredEvents: Event[];
@@ -28,6 +29,7 @@ function HomePage({ featuredEvents }: HomePageProps) {
         <meta name="description" content="Find a lot of great events" />
       </Head>
       <EventsSearch onSearch={findEventsHandler} />
+      <NewsletterRegistration />
       <EventList items={featuredEvents} />
     </>
   );

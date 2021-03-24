@@ -1,12 +1,9 @@
-import { useRef, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
+import { EventComment } from "../../models/event";
 import classes from "./NewComment.module.css";
 
 export interface NewCommentProps {
-  onAddComment: (comment: {
-    email: string;
-    name: string;
-    text: string;
-  }) => void;
+  onAddComment: (comment: EventComment) => void;
 }
 
 function NewComment(props: NewCommentProps) {
@@ -16,7 +13,7 @@ function NewComment(props: NewCommentProps) {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
 
-  function sendCommentHandler(event) {
+  function sendCommentHandler(event: FormEvent) {
     event.preventDefault();
 
     const enteredEmail = emailInputRef.current.value;
@@ -44,7 +41,7 @@ function NewComment(props: NewCommentProps) {
   }
 
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={sendCommentHandler}>
       <div className={classes.row}>
         <div className={classes.control}>
           <label htmlFor="email">Your email</label>

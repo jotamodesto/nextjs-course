@@ -7,3 +7,10 @@ export interface Event {
   image: string;
   isFeatured: boolean;
 }
+
+export interface EventComment {
+  id?: string;
+  email: string;
+  name: string;
+  text: string;
+}
