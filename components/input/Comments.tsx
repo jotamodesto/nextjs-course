@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import NotificationContext from "../../store/NotificationContext";
 import CommentList from "./CommentList";
 import NewComment from "./NewComment";
 import classes from "./Comments.module.css";
@@ -12,15 +13,39 @@ export interface CommentsProps {
 function Comments(props: CommentsProps) {
   const { eventId } = props;
 
+  const { showNotification, hideNotification } = useContext(
+    NotificationContext
+  );
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<EventComment[]>([]);
 
   useEffect(() => {
     async function fetchComments() {
-      const response = await fetch(`/api/event-comment/${eventId}`);
-      const data = await response.json();
+      showNotification({
+        title: "Loading...",
+        message: "Loading comments",
+        status: "pending",
+      });
 
-      setComments(data.comments);
+      try {
+        const response = await fetch(`/api/event-comment/${eventId}`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Something went wrong!");
+        }
+
+        const data = await response.json();
+
+        hideNotification();
+        setComments(data.comments);
+      } catch (error) {
+        showNotification({
+          title: "Error!",
+          message: error.message || "Something went wrong!",
+          status: "error",
+        });
+      }
     }
 
     if (showComments) fetchComments();
@@ -31,14 +56,37 @@ function Comments(props: CommentsProps) {
   }
 
   async function addCommentHandler(commentData: EventComment) {
-    const response = await fetch(`/api/event-comment/${eventId}`, {
-      method: "POST",
-      body: JSON.stringify({ comment: commentData }),
-      headers: { "Content-Type": "application/json" },
+    showNotification({
+      title: "Loading...",
+      message: "Sending comment",
+      status: "pending",
     });
 
-    const data = await response.json();
-    setComments(currentComments => [data.comment, ...currentComments]);
+    try {
+      const response = await fetch(`/api/event-comment/${eventId}`, {
+        method: "POST",
+        body: JSON.stringify({ comment: commentData }),
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong!");
+      }
+
+      const data = await response.json();
+      setComments(currentComments => [data.comment, ...currentComments]);
+      showNotification({
+        title: "Success!",
+        message: "Your comment is available",
+        status: "success",
+      });
+    } catch (error) {
+      showNotification({
+        title: "Error!",
+        message: error.message || "Something went wrong!",
+        status: "error",
+      });
+    }
   }
 
   return (
