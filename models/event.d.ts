@@ -9,7 +9,7 @@ export interface Event {
 }
 
 export interface EventComment {
-  id?: string;
+  _id?: string;
   email: string;
   name: string;
   text: string;

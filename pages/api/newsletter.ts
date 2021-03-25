@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { MongoClient } from "mongodb";
 
+import { connectDB, insertDocument } from "../../helper/db-util";
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "POST": {
@@ -11,15 +13,24 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
       }
 
-      const client = new MongoClient(
-        `mongodb+srv://dbOwner:JeXBs4hPoNYAcfSu@cluster0.15pj0.mongodb.net/newsletter?retryWrites=true&w=majority`
-      );
-      await client.connect();
-      const db = client.db("newsletter");
-      await db.collection("emails").insertOne({ email });
-      client.close();
+      let client: MongoClient;
+      try {
+        client = await connectDB();
+      } catch (error) {
+        res.status(500).json({ message: "Connecting to the database failed" });
+        return;
+      }
 
-      res.status(201).json({ message: "E-mail registered", email });
+      try {
+        await insertDocument(client, "newsletter", { email });
+
+        res.status(201).json({ message: "E-mail registered", email });
+      } catch (error) {
+        res.status(500).json({ message: "Inserting data failed" });
+      } finally {
+        client.close();
+      }
+
       break;
     }
     default:

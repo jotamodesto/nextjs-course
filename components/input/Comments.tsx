@@ -38,7 +38,7 @@ function Comments(props: CommentsProps) {
     });
 
     const data = await response.json();
-    setComments(data.comments);
+    setComments(currentComments => [data.comment, ...currentComments]);
   }
 
   return (
