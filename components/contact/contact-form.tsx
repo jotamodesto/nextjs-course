@@ -1,10 +1,42 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
+
+import Notification, { NotificationProps } from "../ui/notification";
 import classes from "./contact-form.module.css";
 
 function ContactForm() {
   const emailInputRef = useRef<HTMLInputElement>();
   const nameInputRef = useRef<HTMLInputElement>();
   const messageInputRef = useRef<HTMLTextAreaElement>();
+
+  const [requestStatus, setRequestStatus] = useState<
+    "success" | "pending" | "error"
+  >();
+  const [requestError, setRequestError] = useState<string>();
+
+  useEffect(() => {
+    if (requestStatus === "success" || requestStatus === "error") {
+      const timer = setTimeout(() => {
+        setRequestStatus(null);
+        setRequestError(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [requestStatus]);
+
+  async function sendContactDara(contactDetails: any) {
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      body: JSON.stringify(contactDetails),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message ?? "Deu algo errado! 😕");
+    }
+  }
 
   async function sendMessageHandler(event: FormEvent) {
     event.preventDefault();
@@ -15,15 +47,45 @@ function ContactForm() {
 
     const contactMessage = { email, name, message };
 
-    await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(contactMessage),
-      headers: { "Content-Type": "application/json" },
-    });
+    setRequestStatus("pending");
 
-    emailInputRef.current.value = "";
-    nameInputRef.current.value = "";
-    messageInputRef.current.value = "";
+    try {
+      await sendContactDara(contactMessage);
+      setRequestStatus("success");
+
+      emailInputRef.current.value = "";
+      nameInputRef.current.value = "";
+      messageInputRef.current.value = "";
+    } catch (error) {
+      setRequestError(error.message);
+      setRequestStatus("error");
+    }
+  }
+
+  let notification: NotificationProps;
+
+  if (requestStatus === "pending") {
+    notification = {
+      status: "pending",
+      title: "Aguarde...",
+      message: "Estou enviando sua mensagem 📨",
+    };
+  }
+
+  if (requestStatus === "success") {
+    notification = {
+      status: "success",
+      title: "Success!",
+      message: "Recebi sua mensagem! 😀",
+    };
+  }
+
+  if (requestStatus === "error") {
+    notification = {
+      status: "error",
+      title: "Error!",
+      message: requestError,
+    };
   }
 
   return (
@@ -49,6 +111,13 @@ function ContactForm() {
           <button>Enviar</button>
         </div>
       </form>
+      {notification && (
+        <Notification
+          status={notification.status}
+          title={notification.title}
+          message={notification.message}
+        />
+      )}
     </section>
   );
 }
