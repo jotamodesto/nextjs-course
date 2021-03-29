@@ -1,6 +1,6 @@
 ## Português
 
-Este repositório foi utilizado durante o curso <a href="https://www.udemy.com/course/nextjs-react-the-complete-guide" target="_blank" >NextJS the complete guide</a> por <a href="https://github.com/mschwarzmueller" target="_blank" >Maximilian Schwarzmüller</a>
+Este repositório foi utilizado durante o curso <a href="https://www.udemy.com/course/nextjs-react-the-complete-guide" target="_blank" rel="noopener noreferrer" >NextJS the complete guide</a> por <a href="https://github.com/mschwarzmueller" target="_blank" rel="noopener noreferrer">Maximilian Schwarzmüller</a>
 
 O conteúdo do repositório foi separado em branches seguindo as seções do curso. O nome de cada branch representa uma seção.
 
@@ -12,7 +12,7 @@ A aplicação completa foi desenvolvida ao final do curso e se encontra na branc
 
 ## English
 
-This repository is used in the course <a href="https://www.udemy.com/course/nextjs-react-the-complete-guide" target="_blank" >NextJS the complete guide</a> by <a href="https://github.com/mschwarzmueller" target="_blank" >Maximilian Schwarzmüller</a>
+This repository is used in the course <a href="https://www.udemy.com/course/nextjs-react-the-complete-guide" target="_blank" rel="noopener noreferrer">NextJS the complete guide</a> by <a href="https://github.com/mschwarzmueller" target="_blank" rel="noopener noreferrer">Maximilian Schwarzmüller</a>
 
 The repository content is divided in branches following the course sections. The name of each branch represent a section.
 
