@@ -1,4 +1,5 @@
 import { FormEvent, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import { signIn } from "next-auth/client";
 import classes from "./auth-form.module.css";
 
@@ -24,6 +25,8 @@ function AuthForm() {
   const emailInputRef = useRef<HTMLInputElement>();
   const passwordInputRef = useRef<HTMLInputElement>();
 
+  const router = useRouter();
+
   const [isLogin, setIsLogin] = useState(true);
 
   function switchAuthModeHandler() {
@@ -46,6 +49,8 @@ function AuthForm() {
       if (!result.error) {
         emailInputRef.current.value = "";
         passwordInputRef.current.value = "";
+
+        router.replace("/profile");
       }
 
       console.log(result);
